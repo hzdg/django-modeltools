@@ -49,7 +49,7 @@ class Enum(object):
     """
     A class for easily creating enumeration types.
     
-    Usage:
+    Usage::
     
         # models.py
         class MyModel(models.Model):
@@ -67,33 +67,45 @@ class Enum(object):
     
     """
     
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Accepts kwargs where the keyword is the constant name and the value is
-        a tuple containing the ENUM value and a label
+        a tuple containing the ENUM value and a label. If order is important
+        (i.e. for choices), you can also pass 3-tuples::
+
+            Color = Enum(
+                ('RED', 'r', 'Red'),
+                ('GREEN', 'g', 'Green'),
+                ('BLUE', 'b', 'Blue'),
+            )
+
         """
-        self.__kwargs = kwargs
-        for key, value in kwargs.items():
-            setattr(self, key, value[0])
-        self.__choices = kwargs.values()
+        self._constlist = list(args)
+        choices = []
+        for key, (value, label) in kwargs.items():
+            self._constlist.append((key, value, label))
+        for key, value, label in self._constlist:
+            setattr(self, key, value)
+            choices.append((key, label))
+        self.__choices = choices
 
     def choices(self):
         """
         Returns a list formatted for use as field choices.
         (See https://docs.djangoproject.com/en/dev/ref/models/fields/#choices)
         """
-        return self.__choices
+        return [(v, l) for k, v, l in self._constlist]
 
     def keys(self):
-        return self.__kwargs.keys()
+        return [k for k, v, l in self._constlist]
 
     def values(self):
-        return [val[0] for val in self.__kwargs.values()]
+        return [v for k, v, l in self._constlist]
 
     def labels(self):
-        return [val[1] for val in self.__kwargs.values()]
+        return [l for k, v, l in self._constlist]
 
     def get_label(self, enum_value):
-        for key, value in self.__choices:
-            if enum_value == key:
-                return value
+        for key, value, label in self._constlist:
+            if enum_value == value:
+                return label
