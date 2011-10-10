@@ -14,7 +14,7 @@ class PropertyFormatter(object):
         self.__word_delimiter = word_delimiter
 
     def __getitem__(self, key):
-        value = str(getattr(self.__model, key))
+        value = unicode(getattr(self.__model, key))
         if self.__lowercase:
             value = value.lower()
         if not self.__nonwordchars:
