@@ -1,28 +1,42 @@
 import os.path
 import re
+from string import Formatter
 
 
-class PropertyFormatter(object):
+class FilenameFormatter(Formatter):
     """
-    An object that lazily formats properties of a model, exposing them as
-    dictionary keys.
+    Formats values for use in a filename.
+
     """
-    def __init__(self, model, lowercase, nonwordchars, word_delimiter='_'):
-        self.__model = model
-        self.__lowercase = lowercase
-        self.__nonwordchars = nonwordchars
-        self.__word_delimiter = word_delimiter
+    def __init__(self, lowercase, nonwordchars, word_delimiter='_'):
+        self.lowercase = lowercase
+        self.nonwordchars = nonwordchars
+        self.word_delimiter = word_delimiter
+
+    def format_field(self, value, format_spec):
+        """Formats the fields according to the options provided to the
+        constructor.
+
+        """
+        value = super(FilenameFormatter, self).format_field(value, format_spec)
+        if self.lowercase:
+            value = value.lower()
+        if not self.nonwordchars:
+            value = re.sub('[^\w\s]+', '', value)
+        value = re.sub('\s+', self.word_delimiter, value)
+        return value
+
+
+class Wrapper(object):
+    """Wraps a model to provide access to attributes as dict values so that it
+    can be used with formatter classes.
+
+    """
+    def __init__(self, wrapped):
+        self._wrapped = wrapped
 
     def __getitem__(self, key):
-        value = unicode(getattr(self.__model, key))
-        if self.__lowercase:
-            value = value.lower()
-        if not self.__nonwordchars:
-            value = re.sub('[^\w\s]+', '', value)
-        return re.sub('\s+', self.__word_delimiter, value)
-
-    def keys(self):
-        return self.__model.__dict__.keys()
+        return getattr(self._wrapped, key)
 
 
 def format_filename(pattern, add_extension=True, lowercase=True, nonwordchars=False, word_delimiter='_'):
@@ -36,8 +50,9 @@ def format_filename(pattern, add_extension=True, lowercase=True, nonwordchars=Fa
     """
     def upload_to(self, old_filename):
         extension = os.path.splitext(old_filename)[1]
-        wrapper = PropertyFormatter(self, lowercase=lowercase, nonwordchars=nonwordchars, word_delimiter=word_delimiter)
-        filename = pattern.format(**wrapper)
+        formatter = FilenameFormatter(lowercase=lowercase,
+                nonwordchars=nonwordchars, word_delimiter=word_delimiter)
+        filename = formatter.vformat(pattern, [], Wrapper(self))
         if add_extension:
             filename += extension
         return filename
