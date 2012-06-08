@@ -44,7 +44,7 @@ def format_filename(pattern, add_extension=True, lowercase=True, nonwordchars=Fa
     Creates a method to be used as a value for Django models' upload_to
     argument. The returned method will format a filename based on properties of
     the model.
-    
+
     Usage:
         thumbnail = models.ImageField(upload_to=format_filename('profile_images/{last_name}_{first_name}'))
     """

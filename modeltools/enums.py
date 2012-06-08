@@ -2,12 +2,12 @@
 class Enum(object):
     """
     A class for easily creating enumeration types.
-    
+
     Usage::
-    
+
         # models.py
         class MyModel(models.Model):
-            
+
             Color = Enum(
                 RED=('r', 'Red'),
                 GREEN=('g', 'Green'),
@@ -15,12 +15,12 @@ class Enum(object):
             )
 
             color = models.CharField(max_length=1, choices=Color.choices())
-        
+
         # Elsewhere...
         m = MyModel.objects.filter(color=MyModel.Color.RED)
-    
+
     """
-    
+
     def __init__(self, *args, **kwargs):
         """
         Accepts kwargs where the keyword is the constant name and the value is

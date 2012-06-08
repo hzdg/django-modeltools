@@ -17,9 +17,9 @@ The `Enum` class lets you quickly define enumeration types for model field value
 In models.py:
 
 	from modeltools import Enum
-	
+
 	class MyModel(models.Model):
-    
+
 	    Color = Enum(
 	        RED=('r', 'Red'),
 	        GREEN=('g', 'Green'),
@@ -42,7 +42,7 @@ The `format_filename` function provides an easy way to name user media (uploaded
 In models.py:
 
 	from modeltools import format_filename as _ff
-	
+
 	class Person(models.Model):
 		first_name = models.CharField(max_length=50)
 		last_name = models.CharField(max_length=50)
