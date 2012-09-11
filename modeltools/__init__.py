@@ -18,6 +18,11 @@ try:
 except ImportError:
     import_errors.append('managers')
 
+try:
+    from actions import *
+except ImportError:
+    import_errors.append('actions')
+
 if import_errors:
     import logging
     logger = logging.getLogger('modeltools')
