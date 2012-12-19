@@ -12,7 +12,11 @@ class Wrapper(object):
         self._wrapped = wrapped
 
     def __getitem__(self, key):
-        return getattr(self._wrapped, key)
+        wrapped_item = getattr(self._wrapped, key, None)
+        if not wrapped_item:
+            wrapped_item = getattr(self, key, None)
+        if wrapped_item:
+            return wrapped_item
 
 
 class FilenameFormatter(Formatter):
@@ -39,6 +43,19 @@ class FilenameFormatter(Formatter):
         return value
 
 
+class MultiFormatter(Formatter):
+    def __init__(self, formatter_map, default=None):
+        self.formatter_map = formatter_map
+        self.default = default
+
+    def get_field(self, field_name, *args, **kwargs):
+        if field_name in self.formatter_map:
+            formatter = self.formatter_map[field_name]
+        else:
+            formatter = self.default
+        return formatter.get_field(field_name, *args, **kwargs)
+
+
 def format_filename(pattern, add_extension=True, lowercase=True, nonwordchars=False, word_delimiter='_'):
     """
     Creates a method to be used as a value for Django models' upload_to
@@ -49,12 +66,29 @@ def format_filename(pattern, add_extension=True, lowercase=True, nonwordchars=Fa
         thumbnail = models.ImageField(upload_to=format_filename('profile_images/{last_name}_{first_name}'))
     """
     def upload_to(self, old_filename):
-        extension = os.path.splitext(old_filename)[1]
-        formatter = FilenameFormatter(lowercase=lowercase,
+        __filename, __ext = os.path.splitext(
+                os.path.basename(old_filename))
+
+        replacers = Wrapper(self)
+        replacers.__filename = __filename
+        replacers.__ext = __ext
+
+        default_formatter = FilenameFormatter(lowercase=lowercase,
                 nonwordchars=nonwordchars, word_delimiter=word_delimiter)
-        filename = formatter.vformat(pattern, [], Wrapper(self))
-        if add_extension:
-            filename += extension
+        formatter_map = {
+            '__ext': FilenameFormatter(lowercase=lowercase,
+                nonwordchars=False, word_delimiter=word_delimiter),
+            '__filename': FilenameFormatter(lowercase=lowercase,
+                nonwordchars=False, word_delimiter=word_delimiter),
+        }
+
+        formatter = MultiFormatter(formatter_map, default=default_formatter)
+        filename = formatter.vformat(pattern, [], replacers)
+
+        # For backwards compatibility
+        if add_extension and __ext not in filename:
+            filename += __ext
+
         return filename
 
     return upload_to
