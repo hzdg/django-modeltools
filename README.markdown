@@ -51,4 +51,8 @@ In models.py:
 
 In the above example, `{first_name}` and `{last_name}` will be replaced with the corresponding values from the `Person` instance. The uploaded file will automatically retain its original extension.
 
+	upload_to=_ff('avatars/{last_name}_{first_name}/{__filename}.thumbnail{__ext}')
+
+`{__filename}` and `{__ext}` allows access to the name and extension the file was uploaded with.
+
 By default, the properties used in the formatting pattern will be converted to lowercase, stripped of non-word characters, and have their spaces replaced with underscores. (This behavior can be changed by providing extra arguments to the `format_filename` function.) The rest of the formatting string will be unaffected.
