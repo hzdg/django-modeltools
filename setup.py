@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -17,7 +17,5 @@ setup(
     description='A collection of utilities that make dealing with Django models more fun.',
     url='https://github.com/hzdg/django-modeltools',
     long_description=README,
-    packages=[
-        'modeltools',
-    ],
+    packages=find_packages(),
 )
