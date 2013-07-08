@@ -13,7 +13,7 @@ README = read('README.markdown')
 
 setup(
     name='django-modeltools',
-    version='0.1',
+    version='1.0.0',
     description='A collection of utilities that make dealing with Django models more fun.',
     url='https://github.com/hzdg/django-modeltools',
     long_description=README,
