@@ -8,7 +8,10 @@ class EnumFieldMixin(object):
     def __init__(self, enum, choices=None, max_length=10, **options):
         self.enum = enum
         if not choices:
-            choices = [(m.value, getattr(m, 'label', m.name)) for m in enum]
+            try:
+                choices = enum.choices()
+            except AttributeError:
+                choices = [(m.value, getattr(m, 'label', m.name)) for m in enum]
         super(EnumFieldMixin, self).__init__(
             choices=choices, max_length=max_length, **options)
 
