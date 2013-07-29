@@ -1,4 +1,7 @@
+from django.db import connection
 from modeltools.enums import Enum
+import pytest
+from .models import MyModel
 
 
 def test_choices():
@@ -29,12 +32,20 @@ def test_labels():
     assert Color.GREEN.label == 'Green'
 
 
-def test_query_values():
-    """
-    Make sure the values that the Django ORM will use in its queries are
-    correct.
-    """
-    class Color(Enum):
-        RED = 'r'
+@pytest.mark.django_db
+def test_field_value():
+    m = MyModel(color=MyModel.Color.RED)
+    m.save()
+    assert m.color == MyModel.Color.RED
 
-    assert Color.RED() == 'r'
+    m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
+    assert m.color == MyModel.Color.RED
+
+
+@pytest.mark.django_db
+def test_db_value():
+    m = MyModel(color=MyModel.Color.RED)
+    m.save()
+    cursor = connection.cursor()
+    cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
+    assert cursor.fetchone()[0] == MyModel.Color.RED.value
