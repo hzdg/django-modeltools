@@ -2,6 +2,8 @@
 
 import os
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+import sys
 
 
 def read(fname):
@@ -9,6 +11,19 @@ def read(fname):
 
 
 README = read('README.rst')
+
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = ['tests', '-s']
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
 
 
 setup(
@@ -30,4 +45,9 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
+    tests_require=[
+        'pytest-django',
+        'Django',
+    ],
+    cmdclass={'test': PyTest},
 )
