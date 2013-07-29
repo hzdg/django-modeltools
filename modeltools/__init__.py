@@ -9,6 +9,11 @@ except ImportError:
     import_errors.append('enums')
 
 try:
+    from fields import *
+except ImportError:
+    import_errors.append('fields')
+
+try:
     from filenames import *
 except ImportError:
     import_errors.append('filenames')
