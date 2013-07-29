@@ -44,6 +44,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
+    install_requires=[
+        'enum34',
     ],
     tests_require=[
         'pytest-django',
