@@ -14,7 +14,7 @@ Enum
 The ``Enum`` class lets you quickly define enumeration types for model field values. The constructor accepts kwargs where the key is the name of the "constant" and the value is a two-tuple containing the value of the constant (which will be stored in the database) and a label.
 
 Usage
-`````
+'''''
 
 In models.py:
 
