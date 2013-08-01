@@ -1,7 +1,7 @@
 Installation
 ------------
 
-1. ``pip install -e git+git://github.com/hzdg/django-modeltools.git#egg=django-modeltools``
+1. ``pip install django-modeltools``
 
 
 Included Tools
