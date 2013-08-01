@@ -14,8 +14,20 @@ README = read('README.rst')
 setup(
     name='django-modeltools',
     version='1.0.0',
+    author='HZDG',
+    author_email='webmaster@hzdg.com',
     description='A collection of utilities that make dealing with Django models more fun.',
+    license='MIT',
     url='https://github.com/hzdg/django-modeltools',
     long_description=README,
     packages=find_packages(),
+    zip_safe=False,
+    classifiers=[
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Internet :: WWW/HTTP',
+    ],
 )
