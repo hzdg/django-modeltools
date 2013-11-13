@@ -13,7 +13,7 @@ README = read('README.rst')
 
 setup(
     name='django-modeltools',
-    version='1.0.0',
+    version='1.0.1',
     author='HZDG',
     author_email='webmaster@hzdg.com',
     description='A collection of utilities that make dealing with Django models more fun.',
