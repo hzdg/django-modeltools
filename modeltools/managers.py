@@ -6,9 +6,12 @@ class FilteredManager(Manager):
         self.filter_args = kwargs
         super(FilteredManager, self).__init__()
 
-    def get_query_set(self):
+    def get_queryset(self):
         return super(FilteredManager, self).get_query_set() \
                 .filter(**self.filter_args)
+
+    def get_query_set(self):
+        return self.get_queryset()
 
 
 class CustomQuerySetManager(Manager):
