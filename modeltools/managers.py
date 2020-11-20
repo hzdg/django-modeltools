@@ -47,5 +47,8 @@ class CustomQuerySetManager(Manager):
         except AttributeError:
             raise
 
-    def get_query_set(self):
+    def get_queryset(self):
         return self.queryset_class(self.model, using=self._db)
+
+    def get_query_set(self):
+        return self.get_queryset()
