@@ -7,7 +7,7 @@ class FilteredManager(Manager):
         super(FilteredManager, self).__init__()
 
     def get_queryset(self):
-        return super(FilteredManager, self).get_query_set() \
+        return super(FilteredManager, self).get_queryset() \
                 .filter(**self.filter_args)
 
     def get_query_set(self):
